@@ -1,0 +1,6 @@
+io/teamcity/plugins/carbonetes/AbstractAPIWorker.class
+io/teamcity/plugins/carbonetes/Configuration.class
+io/teamcity/plugins/carbonetes/CarbonetesFactory.class
+io/teamcity/plugins/carbonetes/CarbonetesAPI.class
+io/teamcity/plugins/carbonetes/CarbonetesService.class
+io/teamcity/plugins/carbonetes/CarbonetesFactory$1.class

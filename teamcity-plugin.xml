@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<teamcity-plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:schemas-jetbrains-com:teamcity-plugin-v1-xml">
+  <info>
+    <name>carbonetes-teamcity</name>
+    <display-name>Carbonetes</display-name>
+    <version>@Version@</version>
+    <description>Carbonetes serverless container scanning and policy compliance</description>
+    <download-url>Plugin download URL</download-url>
+    <email>eng@carbonetes.com</email>
+    <vendor>
+      <name>Carbonetes</name>
+      <url>https://carbonetes.com</url>
+    </vendor>
+  </info>
+  <deployment use-separate-classloader="true"/>
+</teamcity-plugin>
