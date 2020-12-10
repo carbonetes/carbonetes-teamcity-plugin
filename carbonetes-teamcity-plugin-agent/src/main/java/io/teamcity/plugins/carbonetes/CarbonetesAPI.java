@@ -18,8 +18,10 @@ import org.json.simple.parser.ParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jetbrains.buildServer.RunBuildException;
 import jetbrains.buildServer.agent.BuildRunnerContext;
+import jetbrains.buildServer.agent.artifacts.ArtifactsWatcher;
 
 /**
  * @author carbonetes
@@ -28,165 +30,115 @@ import jetbrains.buildServer.agent.BuildRunnerContext;
 public class CarbonetesAPI extends AbstractAPIWorker {
 	
 	// Private Fields
-	private String token;
 	private String policyResult;
 	private String finalAction;
-	private String innerResponse;
 	// End Private Fields
 	
+	public CarbonetesAPI(Configuration configuration, BuildRunnerContext runnerContext,
+			ArtifactsWatcher artifactsWatcher) {
+		super(configuration,runnerContext,artifactsWatcher);
+		
+		this.configuration		= configuration;
+		this.runnerContext 		= runnerContext;
+		this.artifactsWatcher 	= artifactsWatcher;
+	}
+
 	/**
 	 * CarbonetesAPI
 	 * 
 	 * @param configuration
 	 * @param runnerContext
 	 */
-	public CarbonetesAPI(Configuration configuration, BuildRunnerContext runnerContext) {
-		this.configuration	= configuration;
-		this.runnerContext = runnerContext;
-	}
 
 	public void initialize() throws RunBuildException {
-		
-		runnerContext.getBuild().getBuildLogger().message("========Initializing Plugin========");
 		this.initializeAPICall();
-		
-		
-		if (isAuthenticationGranted()) {
-			runnerContext.getBuild().getBuildLogger().message("Authentication Success!");
-			
-		}else {
-			runnerContext.getBuild().getBuildLogger().message("Authentication Failed!");
-			if (configuration.isFailBuildOnCriticalPluginError()) {
-				throw new RunBuildException(RunnerConstants.ERROR_MESSAGE);
-			}
-		}
-		
 	}
-	
-	/**
-	 * Authentication Check
-	 * 
-	 * @throws RunBuildException
-	 */
-	@SuppressWarnings("unchecked")
-	private Boolean isAuthenticationGranted() throws RunBuildException {
-		
-		String url = RunnerConstants.CARBONETES_ANALYSIS_CHECKER;
-		runnerContext.getBuild().getBuildLogger().message("Authenticating...");
-		httpPost = new HttpPost(url);
-
-		try {
-			String username = configuration.getUsername();
-			String password = configuration.getPassword();
-			String registryUri = configuration.getRegistryUri();
-			String image = configuration.getImage();
-			
-			JSONObject	jsonBody	= new JSONObject();
-			
-			jsonBody.put(RunnerConstants.REGISTRY_URI, registryUri);
-			jsonBody.put(RunnerConstants.REPO_IMAGE_TAG, image);
-			jsonBody.put(RunnerConstants.USERNAME, username);
-			jsonBody.put(RunnerConstants.PASSWORD, password);
-			
-			String			body	= jsonBody.toString();
-			StringEntity	content	= new StringEntity(body);
-
-			content.setContentType("application/json");
-			httpPost.setEntity(content);
-
-			response		= httpclient.execute(httpPost, context);
-			statusCode		= response.getStatusLine().getStatusCode();
-			responseBody	= EntityUtils.toString(response.getEntity());
-			
-			JsonNode		jsonNode	= null;
-			ObjectMapper	mapper		= new ObjectMapper();
-
-			jsonNode			= mapper.readTree(responseBody);
-			token			  	= jsonNode.findPath("token").asText();
-			
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			throw new RunBuildException(e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RunBuildException(e.getMessage());
-		}
-
-		return null != token;
-  }
-	
 	
 	/**
 	 * Performs Comprehensive Analysis
 	 * 
 	 * @throws RunBuildException
 	 */
+	@SuppressWarnings("unchecked")
 	public void performComprehensiveAnalysis() throws RunBuildException {
-	  	String url = RunnerConstants.CARBONETES_ANALYSIS_STATUS;
-	  	runnerContext.getBuild().getBuildLogger().message("=======Comprehensive Analysis======");
-	  	runnerContext.getBuild().getBuildLogger().message("Scanning Image...");
-		httpPost = new HttpPost(url);
 		
+		
+
+		runnerContext.getBuild().getBuildLogger().message("===========Scan details===========");
+		runnerContext.getBuild().getBuildLogger().message("Image : " + configuration.getImage());
+		runnerContext.getBuild().getBuildLogger().message("Registry URI : " + configuration.getRegistryUri());
+		runnerContext.getBuild().getBuildLogger().message("Policy bundle ID : " + configuration.getPolicyBundleID());
+		runnerContext.getBuild().getBuildLogger().message("Carbonetes Engine Timeout : " + configuration.getEngineTimeout());
+		runnerContext.getBuild().getBuildLogger().message("Fail build on policy evaluation result : " + configuration.isFailBuildOnPolicyEvaluationFinalResult());
+		runnerContext.getBuild().getBuildLogger().message("Fail build on critical plugin error : " + configuration.isFailBuildOnCriticalPluginError());
+		runnerContext.getBuild().getBuildLogger().message("Performing Comprehensive Analysis...");
+		String url = RunnerConstants.CARBONETES_ANALYSIS_CHECKER;
+		httpPost = new HttpPost(url);
+
 		try {
-			JSONParser parser 					= new JSONParser();
-			JSONObject json 					= (JSONObject) parser.parse(responseBody);
-			String			body				= json.toString();
-			StringEntity content;
-			int retry							= 1;
-			content 							= new StringEntity(body);
+			String username 			= configuration.getUsername();
+			String password 			= configuration.getPassword();
+			String registryUri			= configuration.getRegistryUri();
+			String image 				= configuration.getImage();
+			String policyBundleId		= configuration.getPolicyBundleID();
+			int engineTimeOut			= configuration.getEngineTimeout();
+			
+			JSONObject	jsonBody		= new JSONObject();
+			
+			jsonBody.put(RunnerConstants.REGISTRY_URI, registryUri);
+			jsonBody.put(RunnerConstants.REPO_IMAGE_TAG, image);
+			jsonBody.put(RunnerConstants.USERNAME, username);
+			jsonBody.put(RunnerConstants.PASSWORD, password);
+			jsonBody.put(RunnerConstants.POLICY_BUNDLE_UUID, policyBundleId);
+			jsonBody.put(RunnerConstants.TIMEOUT, engineTimeOut);
+			
+			String			body		= jsonBody.toString();
+			StringEntity	content		= new StringEntity(body);
+
 			content.setContentType("application/json");
 			httpPost.setEntity(content);
+
+			response					= httpclient.execute(httpPost, context);
+			statusCode					= response.getStatusLine().getStatusCode();
+			responseBody				= EntityUtils.toString(response.getEntity());
 			
-			JsonNode		jsonNode			= null;
-			ObjectMapper	mappers				= new ObjectMapper();
-			jsonNode							= mappers.readTree("false");
+			ObjectMapper	mapper		= new ObjectMapper();
 			
-			while (jsonNode.asText() != "true") {
-				if (System.currentTimeMillis() >= RunnerConstants.MILLISECONDS) {
-					response					= httpclient.execute(httpPost, context);
-					statusCode					= response.getStatusLine().getStatusCode();
-					innerResponse				= EntityUtils.toString(response.getEntity());
-					
-					ObjectMapper	mapper		= new ObjectMapper();
-	
-					jsonNode					= mapper.readTree(innerResponse);
-					
-					retry++;
-				}
-				
-				if (retry > RunnerConstants.ENGINE_TIMEOUT) {
-					break;
+			if (statusCode == HttpStatus.SC_OK) {
+				JsonNode jsonNode		= mapper.readTree(responseBody);
+				getAnalysisResult(jsonNode);
+			}else {
+				if (configuration.isFailBuildOnCriticalPluginError()) {
+					throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
+				}else {
+					runnerContext.getBuild().getBuildLogger().error("6" + RunnerConstants.ERROR_MESSAGE + responseBody);
 				}
 			}
-			if (jsonNode.asText() == "true") {
-				runnerContext.getBuild().getBuildLogger().message("Scanning Image Complete!");
+			
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			if (configuration.isFailBuildOnCriticalPluginError()) {
+				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 			}else {
-				runnerContext.getBuild().getBuildLogger().message("Analysis Failed");
-				if (configuration.isFailBuildOnCriticalPluginError()) {
-					throw new RunBuildException(RunnerConstants.ERROR_MESSAGE);
-				}
+				runnerContext.getBuild().getBuildLogger().error("5" +RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		} catch (IOException e) {
-			
 			e.printStackTrace();
 			if (configuration.isFailBuildOnCriticalPluginError()) {
-				throw new RunBuildException(RunnerConstants.ERROR_MESSAGE);
-			}
-		} catch (ParseException e) {
-			
-			e.printStackTrace();
-			if (configuration.isFailBuildOnCriticalPluginError()) {
-				throw new RunBuildException(RunnerConstants.ERROR_MESSAGE);
+				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
+			}else {
+				runnerContext.getBuild().getBuildLogger().error("4" +RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		}
-	}
+  }
 	
 	/**
 	 * Get Analysis Result
+	 * @param jsonNode2 
 	 * 
 	 * @throws RunBuildException
 	 */
-	public void getAnalysisResult() throws RunBuildException {
+	public void getAnalysisResult(JsonNode checkerData) throws RunBuildException {
 	  	String url 						= RunnerConstants.CARBONETES_ANALYSIS_RESULT;
 	  	
 		httpPost 						= new HttpPost(url);
@@ -198,10 +150,8 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 		runnerContext.getBuild().getBuildLogger().message("Generating Reports...");
 		
 		try {
-			JSONParser parser = new JSONParser();
-			JSONObject json = (JSONObject) parser.parse(responseBody);
-			String			body	= json.toString();
-			StringEntity content;	
+			String			body		= checkerData.toString();
+			StringEntity    content;	
 			
 			content = new StringEntity(body);
 			content.setContentType("application/json");
@@ -216,10 +166,10 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 			
 			jsonNode					= mapper.readTree(responseBody);
 			
-			runnerContext.getBuild().getBuildLogger().message("Generating Reports Complete!");
-			runnerContext.getBuild().getBuildLogger().message("===========Analysis Result=========");
+			
 			
 			if (statusCode == HttpStatus.SC_OK) {
+				runnerContext.getBuild().getBuildLogger().message("===========Analysis Result=========");
 				
 				policyResult 			= jsonNode.findPath(RunnerConstants.REPO_IMAGE_ENVIRONMENTS)
 						.findPath(RunnerConstants.POLICY_EVALUATION_LATEST).findPath("policyResult").asText();
@@ -231,32 +181,31 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 					
 				String workingDirectoryPath = runnerContext.getWorkingDirectory().getAbsolutePath();
 				String jsonContent 			= jsonNode.toString();
-				String path 				= workingDirectoryPath + "/artifacts.json";
+				String path 				= workingDirectoryPath + "/" + RunnerConstants.ARTIFACTS;
 
 				Files.write( Paths.get(path), jsonContent.getBytes(StandardCharsets.UTF_8));
-				 
+				
 				if (configuration.isFailBuildOnPolicyEvaluationFinalResult() && policyResult.equalsIgnoreCase("failed")) {
 					throw new RunBuildException(RunnerConstants.ERROR_ON_FAIL_POLICY_EVALUATION);
 				} else {	
 					if (policyResult.toString().equalsIgnoreCase("failed")) {
-							runnerContext.getBuild().getBuildLogger().message(RunnerConstants.POLICY_EVALUATION_IGNORED);
+							runnerContext.getBuild().getBuildLogger().error("3" +RunnerConstants.POLICY_EVALUATION_IGNORED);
 					}
 				}
-				 
+				artifactsWatcher.addNewArtifactsPath(path);
 			}else {
 				if (configuration.isFailBuildOnCriticalPluginError()) {
-					throw new RunBuildException(RunnerConstants.ERROR_MESSAGE);
+					throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
+				}else {
+					runnerContext.getBuild().getBuildLogger().error("2" +RunnerConstants.ERROR_MESSAGE + responseBody);
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			if (configuration.isFailBuildOnCriticalPluginError()) {
-				throw new RunBuildException(RunnerConstants.ERROR_MESSAGE + "\n" + e.getMessage());
-			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-			if (configuration.isFailBuildOnCriticalPluginError()) {
-				throw new RunBuildException(RunnerConstants.ERROR_MESSAGE + "\n" + e.getMessage());
+				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
+			}else {
+				runnerContext.getBuild().getBuildLogger().error("1" + RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		}
 	}

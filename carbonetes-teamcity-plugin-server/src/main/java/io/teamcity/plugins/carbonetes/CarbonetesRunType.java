@@ -1,6 +1,7 @@
 package io.teamcity.plugins.carbonetes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,10 +49,11 @@ public class CarbonetesRunType extends RunType{
 		return properties -> {
 		      final List<InvalidProperty> invalidProperties = new ArrayList<>();
 		      
-		      final String registryUri 	= properties.get(RunnerConstants.REGISTRY_URI);
-		      final String repoImage 	= properties.get(RunnerConstants.REPO_IMAGE);
-		      final String username 	= properties.get(RunnerConstants.USERNAME);
-		      final String password 	= properties.get(RunnerConstants.PASSWORD);
+		      final String registryUri 		= properties.get(RunnerConstants.REGISTRY_URI);
+		      final String repoImage 		= properties.get(RunnerConstants.REPO_IMAGE);
+		      final String username 		= properties.get(RunnerConstants.USERNAME);
+		      final String password			= properties.get(RunnerConstants.PASSWORD);
+		      final String engineTimeOut	= properties.get(RunnerConstants.TIMEOUT);
 		      
 		      if (registryUri == null) {
 		    	  invalidProperties.add(new InvalidProperty(RunnerConstants.REGISTRY_URI, "Registry URI is required"));
@@ -79,6 +81,15 @@ public class CarbonetesRunType extends RunType{
 		      if (password == null) {
 		    	  invalidProperties.add(new InvalidProperty(RunnerConstants.PASSWORD, "Password is required"));
 			  }
+		      
+		      if (engineTimeOut == null) {
+		    	  invalidProperties.add(new InvalidProperty(RunnerConstants.TIMEOUT, "Engine Timeout is required"));
+		      }else {
+		    	  if (!engineTimeOut.matches("-?(0|[1-9]\\d*)")) {
+			    	  invalidProperties.add(new InvalidProperty(RunnerConstants.TIMEOUT, "Invalid number"));
+			      }
+		      }
+		      
 		     
 
 		      return invalidProperties;
@@ -102,8 +113,19 @@ public class CarbonetesRunType extends RunType{
 	@NotNull
 	@Override
 	public Map<String, String> getDefaultRunnerProperties() {
-		
-		return null;
+		Map<String, String> defaultProperties = new HashMap<>(2);
+	    defaultProperties.put(RunnerConstants.FAIL_ON_POLICY_EVALUATION, "false");
+	    defaultProperties.put(RunnerConstants.FAIL_ON_PLUGIN_ERROR, "false");
+	    return defaultProperties;
+	}
+	
+	@NotNull	
+	@Override
+	public String describeParameters(@NotNull Map<String, String> parameters) {
+		String policyBundleId =  parameters.get(RunnerConstants.POLICY_BUNDLE_UUID) == null ? "No policy bundle configured" : parameters.get(RunnerConstants.POLICY_BUNDLE_UUID);
+	    String failOnPolicyEvaluation = parameters.get(RunnerConstants.FAIL_ON_POLICY_EVALUATION) == null ?  "OFF" : "ON";
+	    String failOnPluginError = parameters.get(RunnerConstants.FAIL_ON_PLUGIN_ERROR) == null ? "OFF" : "ON";
+	    return String.format("Active policy bundle: %s%nFail build on policy evaluation: %s%nFail build on plugin error: %s",policyBundleId , failOnPolicyEvaluation, failOnPluginError);
 	}
 
 }

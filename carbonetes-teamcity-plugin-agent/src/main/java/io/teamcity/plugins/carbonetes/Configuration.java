@@ -8,6 +8,8 @@ public class Configuration {
 	private String			password;
 	private String			registryUri;
 	private String			image;
+	private String			policyBundleId;
+	private int				engineTimeout;
 	private boolean			failBuildOnPolicyEvaluationFinallResult;
 	private boolean			failBuildOnCriticalPluginError;
 	
@@ -43,6 +45,22 @@ public class Configuration {
 		this.image = image;
 	}
 	
+	public String getPolicyBundleID() {
+		return policyBundleId;
+	}
+
+	public void setPolicyBundleID(String policyBundleId) {
+		this.policyBundleId = policyBundleId;
+	}
+	
+	public int getEngineTimeout() {
+		return engineTimeout;
+	}
+
+	public void setEngineTimeout(int engineTimeout) {
+		this.engineTimeout = engineTimeout;
+	}
+	
 	public boolean isFailBuildOnPolicyEvaluationFinalResult() {
 		return failBuildOnPolicyEvaluationFinallResult;
 	}
@@ -59,11 +77,14 @@ public class Configuration {
 		this.failBuildOnCriticalPluginError = failBuildOnCriticalPluginError;
 	}
 	
-	public Configuration(String username, String password, String registryUri, String image, boolean failBuildOnPolicyEvaluationFinallResult, boolean failBuildOnCriticalPluginError) {
+	public Configuration(String username, String password, String registryUri, String image, String policyBundleId,
+			int engineTimeout, boolean failBuildOnPolicyEvaluationFinallResult, boolean failBuildOnCriticalPluginError) {
 		this.username									= username;
 		this.password									= password;
 		this.registryUri								= registryUri;
 		this.image										= image;
+		this.policyBundleId								= policyBundleId;
+		this.engineTimeout								= engineTimeout;
 		this.failBuildOnPolicyEvaluationFinallResult	= failBuildOnPolicyEvaluationFinallResult;
 		this.failBuildOnCriticalPluginError				= failBuildOnCriticalPluginError;
 	}

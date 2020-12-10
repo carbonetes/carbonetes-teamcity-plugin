@@ -11,53 +11,17 @@
 <%--@elvariable id="licenseFinderLatest" type="java.lang.String"--%>
 <%--@elvariable id="fullImageTag" type="java.lang.String"--%>
 
+	
 <html>
-<style scoped="">
-
-				.label {
-						padding: 2px 10px;
-						line-height: 13px;
-						color: #ffffff;
-						font-weight: 400;
-						border-radius: 4px;
-						font-size: 75%;
-					}
-				
-				.label-critical,
-				.label-high,
-				.label-medium,
-				.label-low,
-				.label-negligible,
-				.label-unknown,
-				.label-pending,
-				.label-inactive,
-				.label-all {
-					cursor: pointer;
-				}
-				
-				.label-pending {
-					background-color: #e8e8e8;
-					color: black;
-				}
-				
-				.label-inactive {
-					background-color: #ddd;
-					color: black;
-				}
-				
-				.label-all {
-					border: 1px solid #007bff;
-					background-color: white;
-					color: black;
-				}
-				
-</style>
 <head>
-	<%@ include file="header.jsp" %>
-	<%@ include file="meta.jsp" %>
+	<style>
+		<%@ include file="resources/css/style.css" %>			
+	</style>
+	<%@ include		file="header.jsp" %>
+	<%@ include 	file="meta.jsp" %>
 </head>
 <body>
-	<jsp:include page="page-body.jsp"></jsp:include>
-	<%@ include file="script.jsp" %> 
+	<jsp:include 	page="page-body.jsp"></jsp:include>
+	<%@ include 	file="scripts.jsp" %> 
 </body>
 </html>

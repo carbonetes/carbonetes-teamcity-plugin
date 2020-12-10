@@ -1,6 +1,10 @@
-<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="bs" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="forms" tagdir="/WEB-INF/tags/forms" %>
+
+<script src="${teamcityPluginResourcesPath}resources/js/vue/vue.js"></script>
+<script src="${teamcityPluginResourcesPath}resources/js/vuetify/vuetify.js"></script>
+<script src="${teamcityPluginResourcesPath}resources/js/lodash/lodash.min.js"></script>
 <script>
     new Vue({
       el: '#app',

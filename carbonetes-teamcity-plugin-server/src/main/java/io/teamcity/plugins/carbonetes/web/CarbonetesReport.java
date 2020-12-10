@@ -2,7 +2,9 @@ package io.teamcity.plugins.carbonetes.web;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ import jetbrains.buildServer.web.openapi.WebControllerManager;
 
 public class CarbonetesReport extends BuildTab  {
 	protected CarbonetesReport(WebControllerManager manager, BuildsManager buildManager, PluginDescriptor descriptor) {
-	    super("carbonetesReportTab", "Carbonetes Analysis Report", manager, buildManager,
+	    super("carbonetesReportTab", "Carbonetes Report", manager, buildManager,
 	    descriptor.getPluginResourcesPath(RunnerConstants.CARBONETES_REPORT));
 	    
 	}
@@ -34,7 +36,8 @@ public class CarbonetesReport extends BuildTab  {
 	    final BuildArtifactHolder artifact 			    = buildArtifacts.findArtifact(RunnerConstants.ARTIFACTS);
 	    if (artifact.isAvailable()) {
 	    	try {
-				String 			content 				= StreamUtil.readText(artifact.getArtifact().getInputStream());
+	    		
+	    		String 			content 				= StreamUtil.readText(artifact.getArtifact().getInputStream());
 				JsonNode		policyEvaluationLatest	= null;
 				JsonNode		imageAnalysisLatest		= null;
 				JsonNode		secretAnalysisLatest	= null;
