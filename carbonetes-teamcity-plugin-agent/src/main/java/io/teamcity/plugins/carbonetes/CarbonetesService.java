@@ -5,7 +5,6 @@ import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 
 import jetbrains.buildServer.RunBuildException;
-import jetbrains.buildServer.agent.BuildRunnerContext;
 import jetbrains.buildServer.agent.artifacts.ArtifactsWatcher;
 import jetbrains.buildServer.agent.runner.BuildServiceAdapter;
 import jetbrains.buildServer.agent.runner.ProgramCommandLine;

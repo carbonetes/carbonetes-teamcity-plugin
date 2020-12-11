@@ -12,8 +12,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -62,8 +60,6 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 	@SuppressWarnings("unchecked")
 	public void performComprehensiveAnalysis() throws RunBuildException {
 		
-		
-
 		runnerContext.getBuild().getBuildLogger().message("===========Scan details===========");
 		runnerContext.getBuild().getBuildLogger().message("Image : " + configuration.getImage());
 		runnerContext.getBuild().getBuildLogger().message("Registry URI : " + configuration.getRegistryUri());
@@ -111,7 +107,7 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 				if (configuration.isFailBuildOnCriticalPluginError()) {
 					throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 				}else {
-					runnerContext.getBuild().getBuildLogger().error("6" + RunnerConstants.ERROR_MESSAGE + responseBody);
+					runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 				}
 			}
 			
@@ -120,14 +116,14 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 			if (configuration.isFailBuildOnCriticalPluginError()) {
 				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 			}else {
-				runnerContext.getBuild().getBuildLogger().error("5" +RunnerConstants.ERROR_MESSAGE + responseBody);
+				runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			if (configuration.isFailBuildOnCriticalPluginError()) {
 				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 			}else {
-				runnerContext.getBuild().getBuildLogger().error("4" +RunnerConstants.ERROR_MESSAGE + responseBody);
+				runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		}
   }
@@ -189,7 +185,7 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 					throw new RunBuildException(RunnerConstants.ERROR_ON_FAIL_POLICY_EVALUATION);
 				} else {	
 					if (policyResult.toString().equalsIgnoreCase("failed")) {
-							runnerContext.getBuild().getBuildLogger().error("3" +RunnerConstants.POLICY_EVALUATION_IGNORED);
+							runnerContext.getBuild().getBuildLogger().error(RunnerConstants.POLICY_EVALUATION_IGNORED);
 					}
 				}
 				artifactsWatcher.addNewArtifactsPath(path);
@@ -197,7 +193,7 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 				if (configuration.isFailBuildOnCriticalPluginError()) {
 					throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 				}else {
-					runnerContext.getBuild().getBuildLogger().error("2" +RunnerConstants.ERROR_MESSAGE + responseBody);
+					runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 				}
 			}
 		} catch (IOException e) {
@@ -205,7 +201,7 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 			if (configuration.isFailBuildOnCriticalPluginError()) {
 				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 			}else {
-				runnerContext.getBuild().getBuildLogger().error("1" + RunnerConstants.ERROR_MESSAGE + responseBody);
+				runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		}
 	}

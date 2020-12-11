@@ -1,11 +1,6 @@
 package io.teamcity.plugins.carbonetes.web;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -69,13 +64,4 @@ public class CarbonetesReport extends BuildTab  {
 			}
 	    }
 	}
-	
-	
-	static String readFile(String path, Charset encoding)
-			  throws IOException
-			{
-			  byte[] encoded = Files.readAllBytes(Paths.get(path));
-			  return new String(encoded, encoding);
-			}
-
 }
