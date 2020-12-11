@@ -84,10 +84,6 @@
                                                         <template v-slot:item="props">
                                                             <tr>
                                                                 <td class="text-xs-center">
-                                                                    {{props.item.triggerId}}
-                                                                </td>
-
-                                                                <td class="text-xs-center">
                                                                     {{props.item.gate}}
                                                                 </td>
                                                                 <td class="text-xs-center">

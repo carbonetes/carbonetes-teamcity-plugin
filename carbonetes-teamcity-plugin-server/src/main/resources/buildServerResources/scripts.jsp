@@ -37,7 +37,6 @@
 								{ text: 'Virus', value: 'fileName', sortable: true}
 							],
 							policyHeaders:[
-								{ text: 'Trigger ID', value: 'triggerId', sortable: true},
 								{ text: 'Gate', value: 'gate', sortable: true},
 								{ text: 'Gate Trigger', value: 'gateTrigger', sortable: true},
 								{ text: 'Check Output', value: 'checkOutput', sortable: true},

@@ -181,6 +181,8 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 
 				Files.write( Paths.get(path), jsonContent.getBytes(StandardCharsets.UTF_8));
 				
+				artifactsWatcher.addNewArtifactsPath(path);
+				
 				if (configuration.isFailBuildOnPolicyEvaluationFinalResult() && policyResult.equalsIgnoreCase("failed")) {
 					throw new RunBuildException(RunnerConstants.ERROR_ON_FAIL_POLICY_EVALUATION);
 				} else {	
@@ -188,7 +190,6 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 							runnerContext.getBuild().getBuildLogger().error(RunnerConstants.POLICY_EVALUATION_IGNORED);
 					}
 				}
-				artifactsWatcher.addNewArtifactsPath(path);
 			}else {
 				if (configuration.isFailBuildOnCriticalPluginError()) {
 					throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
