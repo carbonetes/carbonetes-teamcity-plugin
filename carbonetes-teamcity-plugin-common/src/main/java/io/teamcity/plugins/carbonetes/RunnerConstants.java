@@ -23,7 +23,15 @@ public final class RunnerConstants {
 	public static final String ERROR_FAIL_MESSAGE					= "Carbonetes-plugin marked the build as failed due to error(s). ";
 	public static final String ERROR_MESSAGE						= "Errors Encountered : ";
 	
+	public static final String SUBCRIPTION_LINK						= "Please configure your AWS Contract Licenses at https://aws.amazon.com/marketplace/saas/ordering?productId=1bede3a0-aff1-4a89-ad92-baab6b8b4e70";
 	
+	public static final String ERROR_LICENSE_EXPIRED				= "License has already expired.";
+	public static final String MSG_LICENSE_EXPIRED					= "Carbonetes License Expired.";
+	public static final String LINK_LICENSE_EXPIRED					= "Your contract licenses has expired.";
+	
+	public static final String ERROR_INSUFFICIENT_LICENSE			= "Insufficent license count.";
+	public static final String MSG_INSUFFICIENT_LICENSE				= "Insufficient Carbonetes licenses.";
+	public static final String LINK_LICENSE_INSUFFICIENT			= "Your contract licenses is insufficient for your current users.";
 	
 	// JSON  FIELDS
 	public static final String REGISTRY_URI							= "registryUri";
@@ -53,8 +61,8 @@ public final class RunnerConstants {
 	public static final long MILLISECONDS							= 1000;
 	
 	// API END POINTS
-	public static final String CARBONETES_ANALYSIS_CHECKER			= "https://api.carbonetes.com/analyze";
-	public static final String CARBONETES_ANALYSIS_STATUS			= "https://api.carbonetes.com/check-result";
-	public static final String CARBONETES_ANALYSIS_RESULT			= "https://api.carbonetes.com/get-result";
+	public static final String CARBONETES_ANALYSIS_CHECKER			= "https://api.carbonetes.com/api/v1/analysis/analyze";
+	public static final String CARBONETES_ANALYSIS_STATUS			= "https://api.carbonetes.com/api/v1/analysis/check-result";
+	public static final String CARBONETES_ANALYSIS_RESULT			= "https://api.carbonetes.com/api/v1/analysis/get-result";
 	
 }

@@ -105,8 +105,12 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 				getAnalysisResult(jsonNode);
 			}else {
 				if (configuration.isFailBuildOnCriticalPluginError()) {
+					licenseMessage(responseBody);
 					throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 				}else {
+					if (responseBody.equalsIgnoreCase(RunnerConstants.ERROR_LICENSE_EXPIRED)  || responseBody.equalsIgnoreCase(RunnerConstants.LINK_LICENSE_INSUFFICIENT)) {
+						licenseMessage(responseBody);
+					}
 					runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 				}
 			}
@@ -114,15 +118,19 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			if (configuration.isFailBuildOnCriticalPluginError()) {
+				licenseMessage(responseBody);
 				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 			}else {
+				licenseMessage(responseBody);
 				runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			if (configuration.isFailBuildOnCriticalPluginError()) {
+				licenseMessage(responseBody);
 				throw new RunBuildException(RunnerConstants.ERROR_FAIL_MESSAGE + responseBody);
 			}else {
+				licenseMessage(responseBody);
 				runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
 		}
@@ -204,6 +212,16 @@ public class CarbonetesAPI extends AbstractAPIWorker {
 			}else {
 				runnerContext.getBuild().getBuildLogger().error(RunnerConstants.ERROR_MESSAGE + responseBody);
 			}
+		}
+	}
+	
+	public void licenseMessage(String msg) {
+		if (msg.equalsIgnoreCase(RunnerConstants.ERROR_LICENSE_EXPIRED)) {
+			runnerContext.getBuild().getBuildLogger().error(RunnerConstants.MSG_LICENSE_EXPIRED);
+			runnerContext.getBuild().getBuildLogger().error(RunnerConstants.LINK_LICENSE_EXPIRED + RunnerConstants.SUBCRIPTION_LINK);
+		}else if (msg.equalsIgnoreCase(RunnerConstants.ERROR_INSUFFICIENT_LICENSE)) {
+			runnerContext.getBuild().getBuildLogger().error(RunnerConstants.MSG_INSUFFICIENT_LICENSE);
+			runnerContext.getBuild().getBuildLogger().error(RunnerConstants.LINK_LICENSE_INSUFFICIENT + RunnerConstants.SUBCRIPTION_LINK);
 		}
 	}
 }	
