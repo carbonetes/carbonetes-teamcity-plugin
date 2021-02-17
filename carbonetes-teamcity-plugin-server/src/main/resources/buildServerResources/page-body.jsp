@@ -16,7 +16,7 @@
                     <v-tab>
                         <v-card-text>Software Composition Analysis</v-card-text>
                     </v-tab>
-                    <v-tab>
+                    <v-tab v-if="pMalwareResult">
                         <v-card-text>Malware Analysis</v-card-text>
                     </v-tab>
                     <v-tab>
@@ -24,6 +24,9 @@
                     </v-tab>
                     <v-tab>
                         <v-card-text>License Finder Analysis</v-card-text>
+                    </v-tab>
+                    <v-tab>
+                    	<v-card-text>Bill of Materials</v-card-text>
                     </v-tab>
 
                     <v-tabs-items
@@ -50,8 +53,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                     <v-card-text>
-                                                    <span class="label label-negligible" v-if="pr.policyEvaluationResult.policyResult=='PASSED'"> {{pr.policyEvaluationResult.policyResult}}</span>
-                                                    <span class="label label-critical" v-if="pr.policyEvaluationResult.policyResult=='FAILED'"> {{pr.policyEvaluationResult.policyResult}}</span> 
+                                                    	 <span class="label label-negligible" v-if="pr.policyEvaluationResult.policyResult=='PASSED'"> {{pr.policyEvaluationResult.policyResult}}</span>
+                                                    	 <span class="label label-critical" v-if="pr.policyEvaluationResult.policyResult=='FAILED'"> {{pr.policyEvaluationResult.policyResult}}</span>
                                                     </v-card-text>
                                                     <v-divider></v-divider>
                                             </div>
@@ -63,9 +66,10 @@
                                             </div>
                                             <div class="col-md-4">
                                                     <v-card-text>
-                                                    <span class="label label-critical" v-if="pr.policyEvaluationResult.finalAction=='STOP'"> {{pr.policyEvaluationResult.finalAction}}</span>
-                                                    <span class="label label-negligible" v-if="pr.policyEvaluationResult.finalAction=='GO'"> {{pr.policyEvaluationResult.finalAction}}</span>
-                                                    <span class="label label-medium" v-if="pr.policyEvaluationResult.finalAction=='WARN'"> {{pr.policyEvaluationResult.finalAction}}</span>	
+                                                    	<span class="label label-critical" v-if="pr.policyEvaluationResult.finalAction=='STOP'"> {{pr.policyEvaluationResult.finalAction}}</span>
+                                                    	<span class="label label-negligible" v-if="pr.policyEvaluationResult.finalAction=='GO'"> {{pr.policyEvaluationResult.finalAction}}</span>
+                                                    	<span class="label label-medium" v-if="pr.policyEvaluationResult.finalAction=='WARN'"> {{pr.policyEvaluationResult.finalAction}}</span>	
+                                                   
                                                     </v-card-text>
                                                     <v-divider></v-divider>
                                             </div>
@@ -108,7 +112,7 @@
                         <v-tab-item>
                             <v-card class="mx-auto" outlined="">	
                                 <v-card-title> 
-                                    Vulnerabilities Found in ${fullImageTag}
+                                    Vulnerabilities Found in ${name}:${tag}
                                 </v-card-title>
                                 <v-spacer></v-spacer>
                                 
@@ -157,30 +161,6 @@
                                             --
                                             </div>
                                         </td>
-                                        <td class="text-xs-center">
-                                            <div v-if="props.item.feed">
-                                                {{props.item.feed}}
-                                            </div>
-                                            <div v-else="">
-                                            --
-                                            </div>
-                                        </td>
-                                        <td class="text-xs-center">
-                                            <div v-if="props.item.feed_group">
-                                                {{props.item.feed_group}}
-                                            </div>
-                                            <div v-else="">
-                                            --
-                                            </div>
-                                        </td>
-                                        <td class="text-xs-center">
-                                            <div v-if="props.item.gate_action">
-                                                {{props.item.gate_action}}
-                                            </div>
-                                            <div v-else="">
-                                            --
-                                            </div>
-                                        </td>
                                     </tr>
                                 </template>
                                 </v-data-table>
@@ -197,7 +177,7 @@
                                                 <v-divider></v-divider>
                                             </div>
                                             <div class="col-md-3">
-                                                <v-card-text><span class = "label label-negligible">${fullImageTag}</span></v-card-text>
+                                                <v-card-text><span class = "label label-negligible">${name}:${tag}</span></v-card-text>
                                                 <v-divider></v-divider>
                                             </div>
                                             <div class="col-md-3">
@@ -284,7 +264,7 @@
                             </v-card>
                         </v-tab-item>
 
-                        <v-tab-item>
+                        <v-tab-item v-if="pMalwareResult">
                             <div v-if="pMalwareResult.scanResult">
                                 <div v-if="pMalwareResult.scanResult.infectedFiles.length > 0">
                                 <v-data-table
@@ -407,6 +387,79 @@
                                 </v-card>
                             </div>
                         </v-tab-item>
+                        
+                        <v-tab-item>
+                            <v-card class="mx-auto" outlined="">	
+                                <v-card-title> 
+                                    Bill of Materials - ${name}:${tag}
+                                </v-card-title>
+                                <v-spacer></v-spacer>
+                                
+                                <v-data-table
+                                v-bind:items="pBomResult.artifacts"
+                                v-bind:headers="pr.bomHeaders"
+                                :items-per-page-options="pr.rowsPerPageOptions"
+                                class="elevation-1"
+                                >
+                                <template v-slot:item="props">
+                                    <tr>
+                                        <td class="text-xs-center">
+                                        	<div v-if="props.item.name">
+                                                {{props.item.name}}
+                                            </div>
+                                            <div v-else="">
+                                            --
+                                            </div>
+                                        </td>
+                                        <td class="text-xs-center">
+                                            <div v-if="props.item.version">
+                                                {{props.item.version}}
+                                            </div>
+                                            <div v-else="">
+                                            --
+                                            </div>
+                                        </td>
+                                        <td class="text-xs-center">
+                                        	<div v-if="props.item.type">
+                                                {{props.item.type}}
+                                            </div>
+                                            <div v-else="">
+                                            --
+                                            </div>
+                                        </td>
+                                        <td class="text-xs-center">
+                                        	<template v-if="props.item.locations.length > 1">
+				                                <v-tooltip top color="#00b09b">
+				                                    <template v-slot:activator="{ on }">
+				                                        <span v-on="on">
+				                                            {{props.item.locations.length}} paths
+				                                        </span>
+				                                    </template>
+				                                    <span>
+				                                        <span class="font-weight-bold">Package Paths</span>
+				                                        <ul class="mb-0">
+				                                            <li v-for="l in props.item.locations">
+				                                                <span class="font-weight-bold">{{l.path}}</span>
+				                                            </li>
+				                                        </ul>
+				                                    </span>
+				                                </v-tooltip>
+				                         
+				                            </template>
+				                            <template v-else-if="props.item.locations.length == 1">
+				                                <a href="javascript:;">
+				                                    <span>
+				                                        {{props.item.locations[0].path}}
+				                                    </span>
+				                                </a>
+				                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                                </v-data-table>
+                            </v-card>	
+                        </v-tab-item>
+                        
                     </v-tabs-items>
                 </v-tabs>
             </v-card>

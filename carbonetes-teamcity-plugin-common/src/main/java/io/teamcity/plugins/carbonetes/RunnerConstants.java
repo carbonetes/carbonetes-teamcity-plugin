@@ -50,9 +50,12 @@ public final class RunnerConstants {
 	public static final String LICENSE_FINDER_LATEST				= "licenseFinderLatest";
 	public static final String REPO_IMAGE_ENVIRONMENTS				= "repoImageEnvironments";
 	public static final String FULL_IMAGE_TAG						= "fullImageTag";
+	public static final String IMAGE_TAG							= "tag";
+	public static final String IMAGE_NAME							= "name";					
 	public static final String REPO_TAG								= "repoTag";
 	public static final String FAIL_ON_POLICY_EVALUATION			= "failBuildOnPolicyEvaluationFinallResult";
 	public static final String FAIL_ON_PLUGIN_ERROR					= "failBuildOnCriticalPluginError";
+	public static final String BOM_ANALYSIS_LATEST					= "billOfMaterialsAnalysisLatest";
 	
 	// REPORTS
 	public static final String ARTIFACTS							= "carbo-artifacts.json";

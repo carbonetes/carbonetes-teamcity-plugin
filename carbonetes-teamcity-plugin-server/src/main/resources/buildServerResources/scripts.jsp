@@ -43,15 +43,18 @@
 								{ text: 'Gate Action', value: 'gateAction', sortable: true},
 							],	
 							dedupHeaders: [
-								{ text: 'Severity',value: 'severity', sortable: false, align : 'center'},
-								{ text: 'Vulnerability', value: 'vuln' , sortable: false},
-								{ text: 'Package Name', value: 'package_name' , sortable: false},
-								{ text: 'Package Version', value: 'package_version' , sortable: false},
-								{ text: 'Fix', value: 'fix' , sortable: false},
-								{ text: 'Feed', value: 'feed' , sortable: false},
-								{ text: 'Feed Group', value: 'feed_group' , sortable: false},
-								{ text: 'Gate Action', value: 'gate_action' , sortable: false},
+								{ text: 'Severity',value: 'severity', sortable: true, align : 'center'},
+								{ text: 'Vulnerability', value: 'vuln' , sortable: true},
+								{ text: 'Package Name', value: 'package_name' , sortable: true},
+								{ text: 'Package Version', value: 'package_version' , sortable: true},
+								{ text: 'Fix', value: 'fix' , sortable: true},
 								],
+							bomHeaders: [
+								{text: 'Name', align: 'left', value: 'name',sortable: true},
+			                    {text: 'Version', align: 'left', value: 'version',sortable: true},
+			                    {text: 'Type', align: 'left', value: 'type',sortable: true},
+			                    {text: 'Path', align: 'left', value: 'value',sortable: true},
+							],
 							tabItems : [
 								{ tab: 'Vulnerability', content: 'Tab 1 Content' },
 								{ tab: 'Software Composition', content: 'Tab 2 Content' },
@@ -63,12 +66,13 @@
 							rowsPerPageOptions : { 
 								rowsPerPageItems: [5, 10, 20]
                             },
-                            vulnerabilityResult : ${imageAnalysisLatest},
-                            scaResult : ${scaLatest},
-                            malwareResult : ${malwareAnalysisLatest},
-                            licenseResult : ${licenseFinderLatest},
-                            secretsResult : ${secretAnalysisLatest},
-                            policyEvaluationResult : ${policyEvaluationResult}, 
+                            vulnerabilityResult 	: ${imageAnalysisLatest},
+                            scaResult 				: ${scaLatest},
+                            malwareResult 			: ${malwareAnalysisLatest},
+                            licenseResult 			: ${licenseFinderLatest},
+                            secretsResult 			: ${secretAnalysisLatest},
+                            policyEvaluationResult  : ${policyEvaluationResult},
+                            bomResult				: ${billOfMaterialsAnalysisLatest},
                             searchDetails : '',
 								filters: { 
 										categories: ['All', 'Critical', 'High', 'Medium', 'Low', 'Negligible', 'Unknown'],
@@ -119,9 +123,14 @@
 								},
 							},
 						pPolicyEvaluationResult: {
-							get() {
-								return this.pr.policyEvaluationResult
-							}
+								get() {
+									return this.pr.policyEvaluationResult
+								}
+							},
+						pBomResult: {
+								get(){
+									return this.pr.bomResult
+								}
 							},
 						
 						filterButtons: {
