@@ -7,31 +7,31 @@
                 background-color="#0e7984"
                 dark=""
                 >
-                    <v-tab>
+                    <v-tab v-if="pPolicyEvaluationResult">
                         <v-card-text>Policy Evaluation</v-card-text>
                     </v-tab>
-                    <v-tab>
+                    <v-tab v-if="pVulnerabilityResult">
                         <v-card-text>Vulnerability Analysis</v-card-text>
                     </v-tab>
-                    <v-tab>
+                    <v-tab v-if="pScaResult">
                         <v-card-text>Software Composition Analysis</v-card-text>
                     </v-tab>
                     <v-tab v-if="pMalwareResult">
                         <v-card-text>Malware Analysis</v-card-text>
                     </v-tab>
-                    <v-tab>
+                    <v-tab v-if="pSecretsResult">
                         <v-card-text>Secrets Analysis</v-card-text>
                     </v-tab>
-                    <v-tab>
+                    <v-tab v-if="pLicenseFinderResult">
                         <v-card-text>License Finder Analysis</v-card-text>
                     </v-tab>
-                    <v-tab>
+                    <v-tab v-if="pBomResult">
                     	<v-card-text>Bill of Materials</v-card-text>
                     </v-tab>
 
                     <v-tabs-items
                     v-model="pr.tab">
-                        <v-tab-item>
+                        <v-tab-item v-if="pPolicyEvaluationResult">
                             <v-card class="mx-auto" outlined="">
                                     <v-container>
                                         <div class="row">
@@ -109,7 +109,7 @@
                             </v-card>
                         </v-tab-item>
 
-                        <v-tab-item>
+                        <v-tab-item v-if="pVulnerabilityResult">
                             <v-card class="mx-auto" outlined="">	
                                 <v-card-title> 
                                     Vulnerabilities Found in ${name}:${tag}
@@ -141,7 +141,7 @@
                                             <div v-if="props.item.package_name">
                                                 {{props.item.package_name}}
                                             </div>
-                                            <div v-else="">
+                                            <div v-else>
                                             --
                                             </div>
                                         </td>
@@ -149,7 +149,7 @@
                                             <div v-if="props.item.package_version">
                                                 {{props.item.package_version}}
                                             </div>
-                                            <div v-else="">
+                                            <div v-else>
                                             --
                                             </div>
                                         </td>
@@ -157,7 +157,7 @@
                                             <div v-if="props.item.fix">
                                                 {{props.item.fix}}
                                             </div>
-                                            <div v-else="">
+                                            <div v-else>
                                             --
                                             </div>
                                         </td>
@@ -167,7 +167,7 @@
                             </v-card>	
                         </v-tab-item>
 
-                        <v-tab-item>
+                        <v-tab-item v-if="pScaResult">
                             <v-card class="mx-auto" outlined="">
                                 <v-container>
                                 
@@ -287,7 +287,7 @@
                                 
                                 </v-data-table>
                                 </div>
-                                <div v-else="">
+                                <div v-else>
                                     <v-card>
                                             <v-card-title>
                                                 <label>
@@ -298,7 +298,7 @@
                                         </v-card>
                                 </div>
                             </div>
-                            <div v-else="">
+                            <div v-else>
                                     <v-card>
                                             <v-card-title>
                                                 <label style = "color:red">
@@ -310,7 +310,7 @@
                                 </div>
                         </v-tab-item>
 
-                        <v-tab-item>
+                        <v-tab-item v-if="pSecretsResult">
                             <div v-if="pSecretsResult.secrets.length > 0">
                                 <v-data-table
                                     v-bind:items="pSecretsResult.secrets"
@@ -335,7 +335,7 @@
                                 
                                 </v-data-table>
                             </div>
-                            <div v-else="">
+                            <div v-else>
                                 <v-card>
                                     <v-card-title>
                                         No secrets found.
@@ -344,8 +344,8 @@
                             </div>
                         </v-tab-item>
 
-                        <v-tab-item>
-                            <div v-if="pLicenseFinderResult.imageDependencies.length > 0">
+                        <v-tab-item v-if="pLicenseFinderResult">
+                            <div v-if="pLicenseFinderResult.imageDependencies">
                             <v-card class ="mx-auto" outlines="">
                                     <v-card-title style = "color:red"> 
                                         License Finder Status : {{pLicenseFinderResult.imageDependencies.length}} for approval dependencies.
@@ -379,7 +379,7 @@
                                                 </v-data-table>
                             </v-card>
                             </div>
-                            <div v-else="">
+                            <div v-else>
                                 <v-card>
                                     <v-card-title style="color:green">
                                         No dependency approval needed
@@ -388,7 +388,7 @@
                             </div>
                         </v-tab-item>
                         
-                        <v-tab-item>
+                        <v-tab-item v-if="pBomResult">
                             <v-card class="mx-auto" outlined="">	
                                 <v-card-title> 
                                     Bill of Materials - ${name}:${tag}
@@ -407,7 +407,7 @@
                                         	<div v-if="props.item.name">
                                                 {{props.item.name}}
                                             </div>
-                                            <div v-else="">
+                                            <div v-else>
                                             --
                                             </div>
                                         </td>
@@ -415,7 +415,7 @@
                                             <div v-if="props.item.version">
                                                 {{props.item.version}}
                                             </div>
-                                            <div v-else="">
+                                            <div v-else>
                                             --
                                             </div>
                                         </td>
@@ -423,7 +423,7 @@
                                         	<div v-if="props.item.type">
                                                 {{props.item.type}}
                                             </div>
-                                            <div v-else="">
+                                            <div v-else>
                                             --
                                             </div>
                                         </td>
@@ -453,13 +453,17 @@
 				                                    </span>
 				                                </a>
 				                            </template>
+				                            <template v-else>
+				                                <div>
+	                                            --
+	                                            </div>
+				                            </template>
                                         </td>
                                     </tr>
                                 </template>
                                 </v-data-table>
                             </v-card>	
                         </v-tab-item>
-                        
                     </v-tabs-items>
                 </v-tabs>
             </v-card>

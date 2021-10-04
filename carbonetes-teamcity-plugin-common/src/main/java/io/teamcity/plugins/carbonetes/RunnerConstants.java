@@ -64,7 +64,7 @@ public final class RunnerConstants {
 	public static final long MILLISECONDS							= 1000;
 	
 	// API END POINTS
-	public static final String CARBONETES_ANALYSIS_CHECKER			= "https://api.carbonetes.com/api/v1/analysis/analyze";
+	public static final String CARBONETES_ANALYSIS_CHECKER			= "https://api.carbonetes.com/api/v1/analysis/";
 	public static final String CARBONETES_ANALYSIS_STATUS			= "https://api.carbonetes.com/api/v1/analysis/check-result";
 	public static final String CARBONETES_ANALYSIS_RESULT			= "https://api.carbonetes.com/api/v1/analysis/get-result";
 	
